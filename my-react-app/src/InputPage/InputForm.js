@@ -1,174 +1,188 @@
-import React, { useState } from 'react';
-import './InputForm.css';
+import React, { useState } from "react";
+import "./InputForm.css";
+import { calculateFutureValue } from "../Utils/Calculation.js";
 
 function InputForm() {
-    // State to store the values of the input fields
-    const [inputValues, setInputValues] = useState({
-        name: '',
-        field2: '',
-        field3: '',
-        field4: '',
-        field5: '',
-        field6: '',
-        field7: '',
-        field8: '',
-        field9: '',
-        field10: '',
+  const [inputValues, setInputValues] = useState([]);
+  const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
+  const [retiredExpenses, setRetiredExpenses] = useState("");
+  const [inflation, setInflation] = useState("");
+  const [age, setAge] = useState("");
+  const [retirementAge, setRetirementAge] = useState("");
+  const [lifeExpectancy, setLifeExpectancy] = useState("");
+
+  const [yearsForRetirement, setYearsForRetirement] = useState("");
+  const [yearsInRetirement, setYearsInRetirement] = useState("");
+  const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] = useState("");
+
+  const handleInputChange = (event, index) => {
+    const { name, value } = event.target;
+    setInputValues((prevState) => {
+      const updatedValues = [...prevState];
+      updatedValues[index][name] = value;
+      return updatedValues;
     });
+  };
 
-    // Handler function to update the state when any input field changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setInputValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
-    };
+  const handleAddGoal = () => {
+    setInputValues((prevState) => [
+      ...prevState,
+      { goal: "", cost: "", horizon: "" },
+    ]);
+  };
+  const handleTopFieldsChange = () => {
+    const yearsForRetirementValue = retirementAge - age;
+    const yearsInRetirementValue = lifeExpectancy - retirementAge;
 
-    // Handler function to submit the form (you can customize this according to your needs)
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Perform actions with inputValues
-        console.log('Form submitted:', inputValues);
-        // Add additional logic here, such as sending data to a server or processing the form data
-    };
+    setYearsForRetirement(yearsForRetirementValue);
+    setYearsInRetirement(yearsInRetirementValue);
+    const futureValue = calculateFutureValue(inflation/100, yearsForRetirement, currentMonthlyExpenses);
+    const result = (futureValue * (retiredExpenses/100)).toFixed(0);
+    setMonthlyExpensesPostRetirement(result);
+  };
+  const handleRemoveGoal = (index) => {
+    setInputValues((prevState) => {
+      const updatedValues = [...prevState];
+      updatedValues.splice(index, 1);
+      return updatedValues;
+    });
+  };
 
-    return (
-        <div>
-            <br/>
-            <h1>Input fields</h1>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="field1">Name:</label>
-                <input
-                    placeholder="Name"
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Perform any necessary validation or processing of the goal purposes data
+    console.log(inputValues);
+  };
 
-                {/* Repeat the above structure for the remaining fields (field2 to field10) */}
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div class="top-fields">
+          <div className="top-left-fields">
+            <div className="top-field">
+              <label>Annual expenses if retired today (in lakhs):</label>
+              <input
+                type="number"
+                value={currentMonthlyExpenses}
+                onChange={(event) => setCurrentMonthlyExpenses(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>Inflation (your thoughts in %):</label>
+              <input
+                type="number"
+                value={inflation}
+                onChange={(event) => setInflation(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>Age:</label>
+              <input
+                type="number"
+                value={age}
+                onChange={(event) => setAge(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>Age of retirement:</label>
+              <input
+                type="number"
+                value={retirementAge}
+                onChange={(event) => setRetirementAge(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>Life Expectancy:</label>
+              <input
+                type="number"
+                value={lifeExpectancy}
+                onChange={(event) => setLifeExpectancy(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>
+                 % expenses after retirement:
+              </label>
+              <input
+                type="number"
+                value={retiredExpenses}
+                onChange={(event) => setRetiredExpenses(event.target.value)}
+              />
+            </div>
+          </div>
 
-                <label htmlFor="field2">Age:</label>
-                <input
-                    type="number"
-                    id="field2"
-                    name="field2"
-                    value={inputValues.field2}
-                    onChange={handleInputChange} />
-
-                {/* Repeat for fields 3 to 10 */}
-                <label htmlFor="field1">Current Savings:</label>
-                <input
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <label htmlFor="field1">Monthly Expenses:</label>
-                <input
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                 {/* Goals Input*/}    
-               <label htmlFor="field1">Goal 1:</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />    
-                <label htmlFor="field1">Goal 2:</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />     
-                <label htmlFor="field1">Goal 3:</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />     
-                <label htmlFor="field1">Goal 4:</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />     
-                <label htmlFor="field1">Goal 5:</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />     
-                <label htmlFor="field1">Goal 6</label>
-                <input
-                    placeholder='Goal'
-                    type="text"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />
-                <input
-                    placeholder='amount required'
-                    type="number"
-                    id="field1"
-                    name="field1"
-                    value={inputValues.field1}
-                    onChange={handleInputChange} />     
-
-
-                <button type="submit">Submit</button>
-            </form>
+          <div className="top-right-fields">
+            <div className="right-field">
+              <label>Number of years for retirement:</label>
+              <input
+                type="number"
+                value={yearsForRetirement}
+                onChange={(event) => setYearsForRetirement(event.target.value)}
+                onBlur={handleTopFieldsChange}
+                readOnly
+              />
+            </div>
+            <div className="right-field">
+              <label>Number of years in retirement:</label>
+              <input
+                type="number"
+                value={yearsInRetirement}
+                onChange={(event) => setYearsInRetirement(event.target.value)}
+                onBlur={handleTopFieldsChange}
+                readOnly
+              />
+            </div>
+            <div className="right-field">
+              <label>Value of monthly expenses post retirement:</label>
+              <input
+                type="number"
+                value={monthlyExpensesPostRetirement}
+                onChange={(event) => setMonthlyExpensesPostRetirement(event.target.value)}
+                onBlur={handleTopFieldsChange}
+                readOnly
+              />
+            </div>
+          </div>
         </div>
-    );
+        {inputValues.map((goal, index) => (
+          <div key={index} className="goal-row">
+            <input
+              type="text"
+              name="goal"
+              value={goal.goal}
+              onChange={(event) => handleInputChange(event, index)}
+              placeholder="Goal"
+            />
+            <input
+              type="number"
+              name="cost"
+              value={goal.cost}
+              onChange={(event) => handleInputChange(event, index)}
+              placeholder="Cost (today)"
+            />
+            <input
+              type="number"
+              name="horizon"
+              value={goal.horizon}
+              onChange={(event) => handleInputChange(event, index)}
+              placeholder="Horizon (in years)"
+            />
+            <button
+              type="button"
+              onClick={() => handleRemoveGoal(index)}
+              className="remove-button"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={handleAddGoal} className="add-button">
+          Add Goal
+        </button>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
 }
 
 export default InputForm;
