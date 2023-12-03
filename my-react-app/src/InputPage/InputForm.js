@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./InputForm.css";
 import { calculateFutureValue } from "../Utils/Calculation.js";
+import rupeeIcon from "../assets/rupee-indian.png";
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
@@ -13,13 +14,29 @@ function InputForm() {
 
   const [yearsForRetirement, setYearsForRetirement] = useState("");
   const [yearsInRetirement, setYearsInRetirement] = useState("");
-  const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] = useState("");
+  const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] =
+    useState("");
 
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
     setInputValues((prevState) => {
       const updatedValues = [...prevState];
       updatedValues[index][name] = value;
+      
+      // Calculate costAtTimeOfGoal if cost, goalInflation, and horizon values are present
+      if (
+        updatedValues[index].cost &&
+        updatedValues[index].goalInflation &&
+        updatedValues[index].horizon
+      ) {
+        const futureValue = calculateFutureValue(
+          updatedValues[index].goalInflation / 100,
+          updatedValues[index].horizon,
+          updatedValues[index].cost
+        );
+        updatedValues[index].costAtTimeOfGoal = futureValue;
+      }
+      
       return updatedValues;
     });
   };
@@ -27,7 +44,7 @@ function InputForm() {
   const handleAddGoal = () => {
     setInputValues((prevState) => [
       ...prevState,
-      { goal: "", cost: "", horizon: "" },
+      { goal: "", cost: "", goalInflation:"", horizon: "", category: "", costAtTimeOfGoal:0, alreadyInvestedAmount:0, alreadyInvestedAmountReturnRate:0},
     ]);
   };
   const handleTopFieldsChange = () => {
@@ -36,8 +53,12 @@ function InputForm() {
 
     setYearsForRetirement(yearsForRetirementValue);
     setYearsInRetirement(yearsInRetirementValue);
-    const futureValue = calculateFutureValue(inflation/100, yearsForRetirement, currentMonthlyExpenses);
-    const result = (futureValue * (retiredExpenses/100)).toFixed(0);
+    const futureValue = calculateFutureValue(
+      inflation / 100,
+      yearsForRetirement,
+      currentMonthlyExpenses
+    );
+    const result = (futureValue * (retiredExpenses / 100)).toFixed(0);
     setMonthlyExpensesPostRetirement(result);
   };
   const handleRemoveGoal = (index) => {
@@ -57,23 +78,33 @@ function InputForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div class="top-fields">
+        <div className="top-fields">
           <div className="top-left-fields">
             <div className="top-field">
-              <label>Annual expenses if retired today (in lakhs):</label>
-              <input
-                type="number"
-                value={currentMonthlyExpenses}
-                onChange={(event) => setCurrentMonthlyExpenses(event.target.value)}
-              />
+              <label>Monthly expenses if retired today:</label>
+              <div className="icon-wrap">
+                <span className="icon-code">&#8377;</span>
+                <input
+                  className="text-currency align-right"
+                  type="number"
+                  value={currentMonthlyExpenses}
+                  onChange={(event) =>
+                    setCurrentMonthlyExpenses(event.target.value)
+                  }
+                />
+              </div>
             </div>
             <div className="top-field">
               <label>Inflation (your thoughts in %):</label>
-              <input
-                type="number"
-                value={inflation}
-                onChange={(event) => setInflation(event.target.value)}
-              />
+              <div className="icon-wrap">
+                <span className="icon-code">%</span>
+                <input
+                  className="text-currency align-right"
+                  type="number"
+                  value={inflation}
+                  onChange={(event) => setInflation(event.target.value)}
+                />
+              </div>
             </div>
             <div className="top-field">
               <label>Age:</label>
@@ -100,9 +131,7 @@ function InputForm() {
               />
             </div>
             <div className="top-field">
-              <label>
-                 % expenses after retirement:
-              </label>
+              <label>% expenses after retirement:</label>
               <input
                 type="number"
                 value={retiredExpenses}
@@ -137,48 +166,109 @@ function InputForm() {
               <input
                 type="number"
                 value={monthlyExpensesPostRetirement}
-                onChange={(event) => setMonthlyExpensesPostRetirement(event.target.value)}
+                onChange={(event) =>
+                  setMonthlyExpensesPostRetirement(event.target.value)
+                }
                 onBlur={handleTopFieldsChange}
                 readOnly
               />
             </div>
           </div>
         </div>
-        {inputValues.map((goal, index) => (
-          <div key={index} className="goal-row">
-            <input
-              type="text"
-              name="goal"
-              value={goal.goal}
-              onChange={(event) => handleInputChange(event, index)}
-              placeholder="Goal"
-            />
-            <input
-              type="number"
-              name="cost"
-              value={goal.cost}
-              onChange={(event) => handleInputChange(event, index)}
-              placeholder="Cost (today)"
-            />
-            <input
-              type="number"
-              name="horizon"
-              value={goal.horizon}
-              onChange={(event) => handleInputChange(event, index)}
-              placeholder="Horizon (in years)"
-            />
+        <div className="goals">
+          <h2 className="goals-heading">Goals</h2>
+          <div className="goals-list">
+            <div className="goal-row heading">
+              <label>Goal Purpose</label>
+              <label>Cost (today)</label>
+              <label className="small-input">Goal Inflation in %</label>
+              <label className="small-input">Horizon (in years)</label>
+              <label>Category (select)</label>
+              <label>Cost at time of Goal</label>
+              <label>Invested Amount</label>
+              <label className="small-input">Invested Amount Return Rate</label>
+            </div>
+            {inputValues.map((goal, index) => (
+              <div key={index} className="goal-row">
+                <input
+                  type="text"
+                  name="goal"
+                  value={goal.goal}
+                  onChange={(event) => handleInputChange(event, index)}
+                  placeholder="Goal"
+                />
+                <input
+                  type="number"
+                  name="cost"
+                  value={goal.cost}
+                  onChange={(event) => handleInputChange(event, index)}
+                />
+                <input
+                  type="number"
+                  name="goalInflation"
+                  value={goal.goalInflation}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className="small-input"
+                />
+                <input
+                  type="number"
+                  name="horizon"
+                  value={goal.horizon}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className="small-input"
+                />
+                <select
+                  name="category"
+                  value={goal.category}
+                  onChange={(event) => handleInputChange(event, index)}
+                >
+                  <option value="">Select Field</option>
+                  <option value="Family">Family</option>
+                  <option value="Children">Children</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Retirement">Retirement</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <input
+                  type="number"
+                  name="costAtTimeOfGoal"
+                  value={goal.costAtTimeOfGoal}
+                  onChange={(event) => handleInputChange(event, index)}
+                  readOnly
+                />
+                <input
+                  type="number"
+                  name="alreadyInvestedAmount"
+                  value={goal.alreadyInvestedAmount}
+                  onChange={(event) => handleInputChange(event, index)}
+                  placeholder="Already invested amount"
+                />
+                <input
+                  type="number"
+                  name="alreadyInvestedAmountReturnRate"
+                  value={goal.alreadyInvestedAmountReturnRate}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className="small-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveGoal(index)}
+                  className="remove-button align-self-center"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
             <button
               type="button"
-              onClick={() => handleRemoveGoal(index)}
-              className="remove-button"
+              onClick={handleAddGoal}
+              className="add-button"
             >
-              Remove
+              Add Goal
             </button>
           </div>
-        ))}
-        <button type="button" onClick={handleAddGoal} className="add-button">
-          Add Goal
-        </button>
+        </div>
         <button type="submit">Submit</button>
       </form>
     </div>
