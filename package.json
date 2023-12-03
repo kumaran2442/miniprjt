@@ -2,6 +2,7 @@
   "name": "my-react-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kumaran2442.github.io/miniprjt",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -22,7 +23,8 @@
     "rm": "rm -rf docs",
     "mv": "mv build docs",
     "git": "git add . && git commit && git push origin master",
-    "deploy": "npm run rm && npm run build && npm run mv && npm run git"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "gh-pages": "^6.1.0"
   }
 }
