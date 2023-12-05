@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import "./InputForm.css";
 import { calculateFutureValue } from "../Utils/Calculation.js";
+import InflatationValidation from "../Validation/InflatataionValidation.js";
 import rupeeIcon from "../assets/rupee-indian.png";
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
+  const[annualincome,setannualincome]=useState("");
+  const[annualincrement,setannualincrement]=useState("");
   const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
   const [retiredExpenses, setRetiredExpenses] = useState("");
   const [inflation, setInflation] = useState("");
@@ -136,6 +139,22 @@ function InputForm() {
                 type="number"
                 value={retiredExpenses}
                 onChange={(event) => setRetiredExpenses(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>Annual Income:</label>
+              <input
+                type="number"
+                value={annualincome}
+                onChange={(event) => setannualincome(event.target.value)}
+              />
+            </div>
+            <div className="top-field">
+              <label>% Annual Increment:</label>
+              <input
+                type="number"
+                value={annualincrement}
+                onChange={(event) => setannualincome(event.target.value)}
               />
             </div>
           </div>
