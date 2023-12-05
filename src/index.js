@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import SavingsCalculator from './Investments/SavingsAccount';
+import GoldRate from './Investments/GoldCalculator';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
    <>
    <App/>
-   <SavingsCalculator/>
+   <GoldRate/>
    </>
 );
 
