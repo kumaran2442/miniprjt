@@ -5,7 +5,7 @@ const GoldRate = () => {
   const [numberOfYears, setNumberOfYears] = useState(1); // Default to 1 year
 
   const calculateFutureGoldRate = () => {
-    const futureGoldRate = currentGoldRate * Math.pow(1 + 4, numberOfYears);
+    const futureGoldRate = currentGoldRate * Math.pow(1 +0.04, numberOfYears);
     return futureGoldRate.toFixed(2); // Displaying the result with two decimal places
   };
 
