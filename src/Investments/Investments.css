@@ -1,57 +1,18 @@
-/* Fixed Deposit Calculator Styles */
-div {
-  margin-bottom: 15px;
+/* Add this CSS to your component or a separate stylesheet */
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns as needed */
+  gap: 15px; /* Adjust the gap between items */
 }
 
-h1 {
-  text-align: center;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  margin-bottom: 10px;
-  padding: 8px;
+label, input {
   width: 100%;
+  box-sizing: border-box;
 }
 
-button {
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-/* Adjust styling for the Fixed Deposit Calculator */
-.fixed-deposit-calculator {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.fixed-deposit-calculator div {
-  margin-bottom: 15px;
-}
-
-.fixed-deposit-calculator label {
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.fixed-deposit-calculator input {
-  width: calc(100% - 16px); /* Adjust for padding */
-}
-
-.fixed-deposit-calculator button {
-  width: 100%;
-}
-
-.fixed-deposit-calculator h2 {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 1.5rem;
-  color: #4CAF50;
+/* Optional: Style for the Future Gold Rate paragraph */
+p {
+  grid-column: span 2; /* Full width for the paragraph */
+  margin-top: 15px;
 }

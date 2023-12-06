@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Investments.css';
 
 const GoldRate = () => {
   const [currentGoldRate, setCurrentGoldRate] = useState(5000); // Initial gold rate
