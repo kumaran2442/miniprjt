@@ -10,6 +10,7 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/miniprjt" element={<Calculation/>}/>
         <Route path="/" element={<About/>} />
         <Route path="/calculation" element={<Calculation />} />
         

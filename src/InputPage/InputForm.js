@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./InputForm.css";
 import { calculateFutureValue } from "../Utils/Calculation.js";
-import InflatationValidation from "../Validation/InflatataionValidation.js";
 import rupeeIcon from "../assets/rupee-indian.png";
+
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
@@ -77,7 +77,15 @@ function InputForm() {
     // Perform any necessary validation or processing of the goal purposes data
     console.log(inputValues);
   };
+  const InflatationValidation=(v)=>
+  {
+    if( v>10 ||v<7)alert("the inflataion rate occurs between 7 and 10");
+  };
 
+  const Numvalidation=(n)=>
+  {
+    if(n<10 || n>100) alert("Kindly enter the correct details in the input field");
+  };
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -105,6 +113,7 @@ function InputForm() {
                   className="text-currency align-right"
                   type="number"
                   value={inflation}
+                  onBlur={() => InflatationValidation(inflation)}
                   onChange={(event) => setInflation(event.target.value)}
                 />
               </div>
@@ -122,6 +131,8 @@ function InputForm() {
               <input
                 type="number"
                 value={retirementAge}
+                tooltipText="enter your retirement"
+                onBlur={()=>Numvalidation(retirementAge)}
                 onChange={(event) => setRetirementAge(event.target.value)}
               />
             </div>
@@ -130,6 +141,7 @@ function InputForm() {
               <input
                 type="number"
                 value={lifeExpectancy}
+                onBlur={()=>Numvalidation(lifeExpectancy)}
                 onChange={(event) => setLifeExpectancy(event.target.value)}
               />
             </div>
@@ -138,6 +150,7 @@ function InputForm() {
               <input
                 type="number"
                 value={retiredExpenses}
+                onBlur={()=>Numvalidation(retiredExpenses)}
                 onChange={(event) => setRetiredExpenses(event.target.value)}
               />
             </div>
@@ -154,6 +167,7 @@ function InputForm() {
               <input
                 type="number"
                 value={annualincrement}
+                onBlur={()=>Numvalidation(annualincrement)}
                 onChange={(event) => setannualincome(event.target.value)}
               />
             </div>
