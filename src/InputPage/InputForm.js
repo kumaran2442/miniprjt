@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import "./InputForm.css";
 import { calculateFutureValue } from "../Utils/Calculation.js";
 import rupeeIcon from "../assets/rupee-indian.png";
+import "./ToolTip.css"
 
 
 function InputForm() {
@@ -125,6 +126,9 @@ function InputForm() {
                 value={age}
                 onChange={(event) => setAge(event.target.value)}
               />
+              <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
             <div className="top-field">
               <label>Age of retirement:</label>
