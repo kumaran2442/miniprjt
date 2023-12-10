@@ -170,3 +170,11 @@ input[readonly] {
 .goal-row label.small-input {
   width: 75px;
 }
+/* MyComponent.css */
+.bottomRightInput {
+  position: relative;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+  margin: 10px;
+}

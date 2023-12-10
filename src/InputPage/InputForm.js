@@ -139,7 +139,11 @@ function InputForm() {
                 onBlur={()=>Numvalidation(retirementAge)}
                 onChange={(event) => setRetirementAge(event.target.value)}
               />
+                <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
+          
             <div className="top-field">
               <label>Life Expectancy:</label>
               <input
@@ -148,6 +152,9 @@ function InputForm() {
                 onBlur={()=>Numvalidation(lifeExpectancy)}
                 onChange={(event) => setLifeExpectancy(event.target.value)}
               />
+                <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
             <div className="top-field">
               <label>% expenses after retirement:</label>
@@ -157,6 +164,9 @@ function InputForm() {
                 onBlur={()=>Numvalidation(retiredExpenses)}
                 onChange={(event) => setRetiredExpenses(event.target.value)}
               />
+                <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
             <div className="top-field">
               <label>Annual Income:</label>
@@ -165,6 +175,9 @@ function InputForm() {
                 value={annualincome}
                 onChange={(event) => setannualincome(event.target.value)}
               />
+                <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
             <div className="top-field">
               <label>% Annual Increment:</label>
@@ -174,6 +187,9 @@ function InputForm() {
                 onBlur={()=>Numvalidation(annualincrement)}
                 onChange={(event) => setannualincome(event.target.value)}
               />
+                <div class="tooltip">&#9432;
+                   <span class="tooltiptext">info about</span>
+              </div>
             </div>
           </div>
 
@@ -223,6 +239,8 @@ function InputForm() {
               <label>Category (select)</label>
               <label>Cost at time of Goal</label>
               <label>Invested Amount</label>
+              <label>Input 1</label>
+              <label>Input 2</label>
               <label className="small-input">Invested Amount Return Rate</label>
             </div>
             {inputValues.map((goal, index) => (
@@ -288,6 +306,22 @@ function InputForm() {
                   onChange={(event) => handleInputChange(event, index)}
                   className="small-input"
                 />
+                {/* new two input field
+                <input
+                  type="number"
+                  name="alreadyInvestedAmountReturnRate"
+                  value={goal.alreadyInvestedAmountReturnRate}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className="small-input"
+                />
+                <input
+                  type="number"
+                  name="alreadyInvestedAmountReturnRate"
+                  value={goal.alreadyInvestedAmountReturnRate}
+                  onChange={(event) => handleInputChange(event, index)}
+                  className="small-input"
+                />
+            */}
                 <button
                   type="button"
                   onClick={() => handleRemoveGoal(index)}
@@ -304,6 +338,12 @@ function InputForm() {
             >
               Add Goal
             </button>
+            <div className="bottomRightInput">
+                <label>Total</label>
+                <input type="text" 
+                placeholder="Type here"
+                />
+                </div>
           </div>
         </div>
         <button type="submit">Submit</button>
