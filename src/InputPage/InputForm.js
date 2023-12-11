@@ -332,7 +332,7 @@ function InputForm() {
                   onClick={() => handleRemoveGoal(index)}
                   className="remove-button align-self-center"
                 >
-                  -
+                  X
                 </button>
               </div>
             ))}
