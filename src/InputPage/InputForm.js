@@ -87,8 +87,15 @@ function InputForm() {
   {
     if(n<10 || n>100) alert("Kindly enter the correct details in the input field");
   };
+  const headingStyles = {
+    color: 'black',
+    fontFamily: 'Arial, sans-serif',
+    textAlign: 'center',
+    // Add more styles as needed
+  };
   return (
     <div>
+      <h1 style={headingStyles}>General And Retirement Information </h1>
       <form onSubmit={handleSubmit}>
         <div className="top-fields">
           <div className="top-left-fields">
