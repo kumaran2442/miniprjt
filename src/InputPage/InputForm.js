@@ -327,6 +327,7 @@ function InputForm() {
                 />
             */}
                 <button
+                  id="remove-button"
                   type="button"
                   onClick={() => handleRemoveGoal(index)}
                   className="remove-button align-self-center"
@@ -339,6 +340,7 @@ function InputForm() {
               type="button"
               onClick={handleAddGoal}
               className="add-button"
+              id="round-button"
             >
               +
             </button>
