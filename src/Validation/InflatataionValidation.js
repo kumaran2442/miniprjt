@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-function InflatationValidation({ inflation, onInputChange }) {
+function inflationValidation({ inflation, onInputChange }) {
     const [isValid, setIsValid] = useState(true);
 
     useEffect(() => {
@@ -32,4 +32,4 @@ function InflatationValidation({ inflation, onInputChange }) {
     );
 }
 
-export default InflatationValidation;
+export default inflationValidation;

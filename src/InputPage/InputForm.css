@@ -156,7 +156,7 @@ select {
 }
 
 .align-self-left {
-  align-self:flex-start;
+  align-self: flex-start;
 }
 
 input[readonly] {
@@ -170,7 +170,7 @@ input[readonly] {
 .goal-row label.small-input {
   width: 75px;
 }
-/* MyComponent.css */
+
 .bottomRightInput {
   position: static;
   bottom: 0;
@@ -178,41 +178,46 @@ input[readonly] {
   padding: 10px;
   margin: 10px;
 }
-#round-button {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 50%;
-  background-color: #4CAF50; /* Green color */
-  color: #fff; /* Text color */
-  text-align: center;
-  text-decoration: none;
+
+/** Add and remove buttons starts **/
+.add-remove-button {
+  border: none;
+  border-radius: 50px;
+  width: -moz-fit-content;
+  width: fit-content;
+  min-width: 40px;
+  height: 40px;
   font-size: 16px;
   cursor: pointer;
-  border: none; /* Remove border */
-  outline: none; /* Remove outline */
+  transition: border-radius 0.3s cubic-bezier(0.42, 0, 0.58, 1);
 }
 
-/* Hover effect */
-#round-button:hover {
-  background-color: #45a049; /* Darker green color on hover */
+/* Style for the original round button. */
+.add-button {
+  background-color: #4caf50 !important;
+  color: white;
 }
-#remove-button {
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 50%;
-  background-color: red; /* Green color */
-  color: #fff; /* Text color */
+
+.remove-button {
+  background-color: #f44336 !important;
+  color: white;
+}
+
+/* Style for the elongated button on hover. */
+.add-remove-button:hover {
+  /* Increase width to accommodate the text. */
+  width: -moz-fit-content;
+  width: fit-content;
   text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  cursor: pointer;
-  border: none; /* Remove border */
-  outline: none; /* Remove outline */
 }
 
-/* Hover effect */
-#remove-button:hover {
-  background-color: coral; /* Darker green color on hover */
+/* Add content for buttons on hover. */
+.add-button:hover::after {
+  content: " Add";
 }
 
+.remove-button:hover::after {
+  content: " Remove";
+}
 
+/** Add and remove buttons ends **/
