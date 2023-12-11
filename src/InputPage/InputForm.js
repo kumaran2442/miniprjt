@@ -170,6 +170,9 @@ function InputForm() {
             </div>
             <div className="top-field">
               <label>Annual Income:</label>
+              <div className="icon-wrap">
+              <span className="icon-code">&#8377;</span>
+              </div>
               <input
                 type="number"
                 value={annualincome}
@@ -253,6 +256,7 @@ function InputForm() {
                   placeholder="Goal"
                 />
                 <input
+                  placeholder="₹"
                   type="number"
                   name="cost"
                   value={goal.cost}
@@ -327,7 +331,7 @@ function InputForm() {
                   onClick={() => handleRemoveGoal(index)}
                   className="remove-button align-self-center"
                 >
-                  Remove
+                  -
                 </button>
               </div>
             ))}
@@ -336,7 +340,7 @@ function InputForm() {
               onClick={handleAddGoal}
               className="add-button"
             >
-              Add Goal
+              +
             </button>
             <div className="bottomRightInput">
                 <label>Total</label>

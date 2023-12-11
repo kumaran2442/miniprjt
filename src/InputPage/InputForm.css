@@ -172,7 +172,7 @@ input[readonly] {
 }
 /* MyComponent.css */
 .bottomRightInput {
-  position: relative;
+  position: static;
   bottom: 0;
   right: 0;
   padding: 10px;
