@@ -1,14 +1,13 @@
 import React, { useState,useEffect } from "react";
 import "./InputForm.css";
-import { calculateFutureValue } from "../Utils/Calculation.js";
-import rupeeIcon from "../assets/rupee-indian.png";
+import { calculateFutureValue, calculateMonthlySavings } from "../Utils/Calculation.js";
 import "./ToolTip.css"
 
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
-  const[annualincome,setannualincome]=useState("");
-  const[annualincrement,setannualincrement]=useState("");
+  const[annualIncome,setAnnualIncome]=useState("");
+  const[annualIncrement,setAnnualIncrement]=useState("");
   const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
   const [retiredExpenses, setRetiredExpenses] = useState("");
   const [inflation, setInflation] = useState("");
@@ -18,6 +17,7 @@ function InputForm() {
 
   const [yearsForRetirement, setYearsForRetirement] = useState("");
   const [yearsInRetirement, setYearsInRetirement] = useState("");
+  const [totalMonthlyInvestmentAmount, setTotalMonthlyInvestmentAmount] = useState("");
   const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] =
     useState("");
 
@@ -33,16 +33,31 @@ function InputForm() {
         updatedValues[index].goalInflation &&
         updatedValues[index].horizon
       ) {
+        var horizon = updatedValues[index].horizon
+        var toBeInvestedAmountReturnRate = updatedValues[index].toBeInvestedAmountReturnRate
         const futureValue = calculateFutureValue(
           updatedValues[index].goalInflation / 100,
           updatedValues[index].horizon,
           updatedValues[index].cost
         );
         updatedValues[index].costAtTimeOfGoal = futureValue;
+
+        if (horizon < 3) {
+          updatedValues[index].toBeInvestedAmountReturnRate = 7; // fixed deposit
+        } else if (horizon > 3 && horizon < 7) {
+          updatedValues[index].toBeInvestedAmountReturnRate = 10; // debt mutual funds and bonds
+        } else if (horizon > 7) {
+          updatedValues[index].toBeInvestedAmountReturnRate = 12; // equity mutual funds
+        }
+
+        updatedValues[index].toBeInvestedAmount = calculateMonthlySavings(updatedValues[index].cost,
+          horizon,
+          updatedValues[index].goalInflation / 100,
+          updatedValues[index].toBeInvestedAmountReturnRate / 100)
       }
-      
       return updatedValues;
     });
+    
   };
 
   const handleAddGoal = () => {
@@ -78,12 +93,12 @@ function InputForm() {
     // Perform any necessary validation or processing of the goal purposes data
     console.log(inputValues);
   };
-  const InflatationValidation=(v)=>
+  const inflationValidation=(v)=>
   {
-    if( v>10 ||v<7)alert("the inflataion rate occurs between 7 and 10");
+    if( v>10 ||v<7)alert("the inflation rate occurs between 7 and 10");
   };
 
-  const Numvalidation=(n)=>
+  const numValidation=(n)=>
   {
     if(n<10 || n>100) alert("Kindly enter the correct details in the input field");
   };
@@ -93,7 +108,7 @@ function InputForm() {
         <div className="top-fields">
           <div className="top-left-fields">
             <div className="top-field">
-              <label>Monthly expenses if retired today:</label>
+              <label>Monthly expenses today:</label>
               <div className="icon-wrap">
                 <span className="icon-code">&#8377;</span>
                 <input
@@ -114,7 +129,7 @@ function InputForm() {
                   className="text-currency align-right"
                   type="number"
                   value={inflation}
-                  onBlur={() => InflatationValidation(inflation)}
+                  onBlur={() => inflationValidation(inflation)}
                   onChange={(event) => setInflation(event.target.value)}
                 />
               </div>
@@ -127,7 +142,7 @@ function InputForm() {
                 onChange={(event) => setAge(event.target.value)}
               />
               <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
@@ -136,24 +151,23 @@ function InputForm() {
                 type="number"
                 value={retirementAge}
                 tooltipText="enter your retirement"
-                onBlur={()=>Numvalidation(retirementAge)}
+                onBlur={()=>numValidation(retirementAge)}
                 onChange={(event) => setRetirementAge(event.target.value)}
               />
                 <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">info about</span>
               </div>
             </div>
-          
             <div className="top-field">
               <label>Life Expectancy:</label>
               <input
                 type="number"
                 value={lifeExpectancy}
-                onBlur={()=>Numvalidation(lifeExpectancy)}
+                onBlur={()=>numValidation(lifeExpectancy)}
                 onChange={(event) => setLifeExpectancy(event.target.value)}
               />
                 <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
@@ -161,34 +175,34 @@ function InputForm() {
               <input
                 type="number"
                 value={retiredExpenses}
-                onBlur={()=>Numvalidation(retiredExpenses)}
+                onBlur={()=>numValidation(retiredExpenses)}
                 onChange={(event) => setRetiredExpenses(event.target.value)}
               />
                 <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
               <label>Annual Income:</label>
               <input
                 type="number"
-                value={annualincome}
-                onChange={(event) => setannualincome(event.target.value)}
+                value={annualIncome}
+                onChange={(event) => setAnnualIncome(event.target.value)}
               />
                 <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">Input total income you make from all sources in a year</span>
               </div>
             </div>
             <div className="top-field">
               <label>% Annual Increment:</label>
               <input
                 type="number"
-                value={annualincrement}
-                onBlur={()=>Numvalidation(annualincrement)}
-                onChange={(event) => setannualincome(event.target.value)}
+                value={annualIncrement}
+                onBlur={()=>numValidation(annualIncrement)}
+                onChange={(event) => setAnnualIncome(event.target.value)}
               />
                 <div class="tooltip">&#9432;
-                   <span class="tooltiptext">info about</span>
+                   <span class="tool-tip-text">info about</span>
               </div>
             </div>
           </div>
@@ -200,7 +214,6 @@ function InputForm() {
                 type="number"
                 value={yearsForRetirement}
                 onChange={(event) => setYearsForRetirement(event.target.value)}
-                onBlur={handleTopFieldsChange}
                 readOnly
               />
             </div>
@@ -210,7 +223,6 @@ function InputForm() {
                 type="number"
                 value={yearsInRetirement}
                 onChange={(event) => setYearsInRetirement(event.target.value)}
-                onBlur={handleTopFieldsChange}
                 readOnly
               />
             </div>
@@ -222,7 +234,6 @@ function InputForm() {
                 onChange={(event) =>
                   setMonthlyExpensesPostRetirement(event.target.value)
                 }
-                onBlur={handleTopFieldsChange}
                 readOnly
               />
             </div>
@@ -238,10 +249,10 @@ function InputForm() {
               <label className="small-input">Horizon (in years)</label>
               <label>Category (select)</label>
               <label>Cost at time of Goal</label>
-              <label>Invested Amount</label>
-              <label>Input 1</label>
-              <label>Input 2</label>
-              <label className="small-input">Invested Amount Return Rate</label>
+              <label>Already Invested Amount</label>
+              <label className="small-input">Already Invested Return Rate</label>
+              <label className="small-input">To Be Invested Amount</label>
+              <label className="small-input">To Be Invested Return Rate</label>
             </div>
             {inputValues.map((goal, index) => (
               <div key={index} className="goal-row">
@@ -306,22 +317,21 @@ function InputForm() {
                   onChange={(event) => handleInputChange(event, index)}
                   className="small-input"
                 />
-                {/* new two input field
+                
                 <input
                   type="number"
-                  name="alreadyInvestedAmountReturnRate"
-                  value={goal.alreadyInvestedAmountReturnRate}
-                  onChange={(event) => handleInputChange(event, index)}
+                  name="toBeInvestedAmount"
+                  value={goal.toBeInvestedAmount}
                   className="small-input"
+                  readOnly
                 />
                 <input
                   type="number"
-                  name="alreadyInvestedAmountReturnRate"
-                  value={goal.alreadyInvestedAmountReturnRate}
-                  onChange={(event) => handleInputChange(event, index)}
+                  name="toBeInvestedAmountReturnRate"
+                  value={goal.toBeInvestedAmountReturnRate}
                   className="small-input"
+                  readOnly
                 />
-            */}
                 <button
                   type="button"
                   onClick={() => handleRemoveGoal(index)}
@@ -340,8 +350,11 @@ function InputForm() {
             </button>
             <div className="bottomRightInput">
                 <label>Total</label>
-                <input type="text" 
-                placeholder="Type here"
+              <input 
+                  type="number"
+                  name="totalMonthlyInvestmentAmount"
+                  value={totalMonthlyInvestmentAmount}
+                readOnly
                 />
                 </div>
           </div>
