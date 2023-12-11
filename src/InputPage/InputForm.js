@@ -9,7 +9,7 @@ function InputForm() {
   const [annualIncome, setAnnualIncome] = useState("");
   const [annualIncrement, setAnnualIncrement] = useState("");
   const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
-  const [retiredExpenses, setRetiredExpenses] = useState("");
+  const [retiredExpenses, setRetiredExpenses] = useState();
   const [inflation, setInflation] = useState("");
   const [age, setAge] = useState("");
   const [retirementAge, setRetirementAge] = useState("");
@@ -19,7 +19,7 @@ function InputForm() {
   const [yearsInRetirement, setYearsInRetirement] = useState("");
   const [totalMonthlyInvestmentAmount, setTotalMonthlyInvestmentAmount] = useState("");
   const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] =
-    useState("");
+    useState(0);
 
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
@@ -34,7 +34,6 @@ function InputForm() {
         updatedValues[index].horizon
       ) {
         var horizon = updatedValues[index].horizon
-        var toBeInvestedAmountReturnRate = updatedValues[index].toBeInvestedAmountReturnRate
         const futureValue = calculateFutureValue(
           updatedValues[index].goalInflation / 100,
           updatedValues[index].horizon,
@@ -55,6 +54,12 @@ function InputForm() {
           updatedValues[index].goalInflation / 100,
           updatedValues[index].toBeInvestedAmountReturnRate / 100)
       }
+      // Calculate totalMonthlyInvestmentAmount
+      const totalInvestmentAmount = inputValues.reduce(
+        (sum, goal) => sum + Number(goal.toBeInvestedAmount),
+        0
+      );
+      setTotalMonthlyInvestmentAmount(totalInvestmentAmount.toFixed(0));
       return updatedValues;
     });
 
@@ -63,7 +68,18 @@ function InputForm() {
   const handleAddGoal = () => {
     setInputValues((prevState) => [
       ...prevState,
-      { goal: "", cost: "", goalInflation: "", horizon: "", category: "", costAtTimeOfGoal: 0, alreadyInvestedAmount: 0, alreadyInvestedAmountReturnRate: 0 },
+      {
+        goal: "",
+        cost: 0,
+        goalInflation: 0,
+        horizon: 0,
+        category: "",
+        costAtTimeOfGoal: 0,
+        alreadyInvestedAmount: 0,
+        alreadyInvestedAmountReturnRate: 0,
+        toBeInvestedAmount: 0,
+        toBeInvestedAmountReturnRate: 0
+      },
     ]);
   };
   const handleTopFieldsChange = () => {
@@ -113,8 +129,10 @@ function InputForm() {
                   className="text-currency align-right"
                   type="number"
                   value={currentMonthlyExpenses}
-                  onChange={(event) =>
-                    setCurrentMonthlyExpenses(event.target.value)
+                  onChange={(event) => {
+                    setCurrentMonthlyExpenses(event.target.value);
+                    handleTopFieldsChange();
+                  }
                   }
                 />
               </div>
@@ -127,8 +145,12 @@ function InputForm() {
                   className="text-currency align-right"
                   type="number"
                   value={inflation}
+                  placeholder="7-10%"
                   onBlur={() => inflationValidation(inflation)}
-                  onChange={(event) => setInflation(event.target.value)}
+                  onChange={(event) => {
+                    setInflation(event.target.value)
+                    handleTopFieldsChange();
+                  }}
                 />
               </div>
             </div>
@@ -136,8 +158,13 @@ function InputForm() {
               <label>Age:</label>
               <input
                 type="number"
+                className="align-right"
+                placeholder="enter your age"
                 value={age}
-                onChange={(event) => setAge(event.target.value)}
+                onChange={(event) => {
+                  setAge(event.target.value);
+                  handleTopFieldsChange();
+                }}
               />
               <div class="tooltip">&#9432;
                 <span class="tool-tip-text">info about</span>
@@ -146,11 +173,16 @@ function InputForm() {
             <div className="top-field">
               <label>Age of retirement:</label>
               <input
+                className="align-right"
                 type="number"
                 value={retirementAge}
+                placeholder="50?"
                 tooltipText="enter your retirement"
                 onBlur={() => numValidation(retirementAge)}
-                onChange={(event) => setRetirementAge(event.target.value)}
+                onChange={(event) => {
+                  setRetirementAge(event.target.value)
+                  handleTopFieldsChange();
+                }}
               />
               <div class="tooltip">&#9432;
                 <span class="tool-tip-text">info about</span>
@@ -160,9 +192,14 @@ function InputForm() {
               <label>Life Expectancy:</label>
               <input
                 type="number"
+                className="align-right"
+                placeholder="80?"
                 value={lifeExpectancy}
                 onBlur={() => numValidation(lifeExpectancy)}
-                onChange={(event) => setLifeExpectancy(event.target.value)}
+                onChange={(event) => {
+                  setLifeExpectancy(event.target.value)
+                  handleTopFieldsChange();
+                }}
               />
               <div class="tooltip">&#9432;
                 <span class="tool-tip-text">info about</span>
@@ -172,9 +209,14 @@ function InputForm() {
               <label>% expenses after retirement:</label>
               <input
                 type="number"
+                className="align-right"
                 value={retiredExpenses}
+                placeholder="70-80%"
                 onBlur={() => numValidation(retiredExpenses)}
-                onChange={(event) => setRetiredExpenses(event.target.value)}
+                onChange={(event) => {
+                  setRetiredExpenses(event.target.value)
+                  handleTopFieldsChange();
+                }}
               />
               <div class="tooltip">&#9432;
                 <span class="tool-tip-text">info about</span>
@@ -186,6 +228,7 @@ function InputForm() {
                 <span className="icon-code">&#8377;</span>
               </div>
               <input
+                className="text-currency align-right"
                 type="number"
                 value={annualIncome}
                 onChange={(event) => setAnnualIncome(event.target.value)}
@@ -198,6 +241,8 @@ function InputForm() {
               <label>% Annual Increment:</label>
               <input
                 type="number"
+                className="align-right"
+                placeholder="10-15%"
                 value={annualIncrement}
                 onBlur={() => numValidation(annualIncrement)}
                 onChange={(event) => setAnnualIncome(event.target.value)}
@@ -264,26 +309,31 @@ function InputForm() {
                   onChange={(event) => handleInputChange(event, index)}
                   placeholder="Goal"
                 />
-                <input
-                  placeholder="₹"
-                  type="number"
-                  name="cost"
-                  value={goal.cost}
-                  onChange={(event) => handleInputChange(event, index)}
-                />
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="cost"
+                    value={goal.cost}
+                    onChange={(event) => handleInputChange(event, index)}
+                  />
+                </div>
                 <input
                   type="number"
                   name="goalInflation"
                   value={goal.goalInflation}
                   onChange={(event) => handleInputChange(event, index)}
-                  className="small-input"
+                  className="small-input align-right"
                 />
                 <input
                   type="number"
                   name="horizon"
                   value={goal.horizon}
                   onChange={(event) => handleInputChange(event, index)}
-                  className="small-input"
+                  className="small-input align-right"
                 />
                 <select
                   name="category"
@@ -298,40 +348,57 @@ function InputForm() {
                   <option value="Other">Other</option>
                 </select>
 
-                <input
-                  type="number"
-                  name="costAtTimeOfGoal"
-                  value={goal.costAtTimeOfGoal}
-                  onChange={(event) => handleInputChange(event, index)}
-                  readOnly
-                />
-                <input
-                  type="number"
-                  name="alreadyInvestedAmount"
-                  value={goal.alreadyInvestedAmount}
-                  onChange={(event) => handleInputChange(event, index)}
-                  placeholder="Already invested amount"
-                />
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="costAtTimeOfGoal"
+                    value={goal.costAtTimeOfGoal}
+                    onChange={(event) => handleInputChange(event, index)}
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="alreadyInvestedAmount"
+                    value={goal.alreadyInvestedAmount}
+                    onChange={(event) => handleInputChange(event, index)}
+                    placeholder="Already invested amount"
+                  />
+                </div>
                 <input
                   type="number"
                   name="alreadyInvestedAmountReturnRate"
                   value={goal.alreadyInvestedAmountReturnRate}
                   onChange={(event) => handleInputChange(event, index)}
-                  className="small-input"
+                  className="small-input align-right"
                 />
 
-                <input
-                  type="number"
-                  name="toBeInvestedAmount"
-                  value={goal.toBeInvestedAmount}
-                  className="small-input"
-                  readOnly
-                />
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right small-input"
+                    type="number"
+                    name="toBeInvestedAmount"
+                    value={goal.toBeInvestedAmount}
+                    readOnly
+                  />
+                </div>
                 <input
                   type="number"
                   name="toBeInvestedAmountReturnRate"
                   value={goal.toBeInvestedAmountReturnRate}
-                  className="small-input"
+                  className="small-input align-right"
                   readOnly
                 />
                 <button
@@ -353,7 +420,11 @@ function InputForm() {
             </button>
             <div className="bottomRightInput">
               <label>Total</label>
+              <div className="icon-wrap">
+                <span className="icon-code">&#8377;</span>
+              </div>
               <input
+                className="text-currency align-right small-input"
                 type="number"
                 name="totalMonthlyInvestmentAmount"
                 value={totalMonthlyInvestmentAmount}
@@ -362,7 +433,6 @@ function InputForm() {
             </div>
           </div>
         </div>
-        <button type="submit">Submit</button>
       </form>
     </div>
   );
