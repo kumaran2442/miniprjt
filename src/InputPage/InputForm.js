@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./InputForm.css";
 import { calculateFutureValue, calculateMonthlySavings } from "../Utils/Calculation.js";
 import "./ToolTip.css"
@@ -6,8 +6,8 @@ import "./ToolTip.css"
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
-  const[annualIncome,setAnnualIncome]=useState("");
-  const[annualIncrement,setAnnualIncrement]=useState("");
+  const [annualIncome, setAnnualIncome] = useState("");
+  const [annualIncrement, setAnnualIncrement] = useState("");
   const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
   const [retiredExpenses, setRetiredExpenses] = useState("");
   const [inflation, setInflation] = useState("");
@@ -26,7 +26,7 @@ function InputForm() {
     setInputValues((prevState) => {
       const updatedValues = [...prevState];
       updatedValues[index][name] = value;
-      
+
       // Calculate costAtTimeOfGoal if cost, goalInflation, and horizon values are present
       if (
         updatedValues[index].cost &&
@@ -57,13 +57,13 @@ function InputForm() {
       }
       return updatedValues;
     });
-    
+
   };
 
   const handleAddGoal = () => {
     setInputValues((prevState) => [
       ...prevState,
-      { goal: "", cost: "", goalInflation:"", horizon: "", category: "", costAtTimeOfGoal:0, alreadyInvestedAmount:0, alreadyInvestedAmountReturnRate:0},
+      { goal: "", cost: "", goalInflation: "", horizon: "", category: "", costAtTimeOfGoal: 0, alreadyInvestedAmount: 0, alreadyInvestedAmountReturnRate: 0 },
     ]);
   };
   const handleTopFieldsChange = () => {
@@ -93,14 +93,12 @@ function InputForm() {
     // Perform any necessary validation or processing of the goal purposes data
     console.log(inputValues);
   };
-  const inflationValidation=(v)=>
-  {
-    if( v>10 ||v<7)alert("the inflation rate occurs between 7 and 10");
+  const inflationValidation = (v) => {
+    if (v > 10 || v < 7) alert("the inflation rate occurs between 7 and 10");
   };
 
-  const numValidation=(n)=>
-  {
-    if(n<10 || n>100) alert("Kindly enter the correct details in the input field");
+  const numValidation = (n) => {
+    if (n < 10 || n > 100) alert("Kindly enter the correct details in the input field");
   };
   return (
     <div>
@@ -142,7 +140,7 @@ function InputForm() {
                 onChange={(event) => setAge(event.target.value)}
               />
               <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">info about</span>
+                <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
@@ -151,11 +149,11 @@ function InputForm() {
                 type="number"
                 value={retirementAge}
                 tooltipText="enter your retirement"
-                onBlur={()=>numValidation(retirementAge)}
+                onBlur={() => numValidation(retirementAge)}
                 onChange={(event) => setRetirementAge(event.target.value)}
               />
-                <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">info about</span>
+              <div class="tooltip">&#9432;
+                <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
@@ -163,11 +161,11 @@ function InputForm() {
               <input
                 type="number"
                 value={lifeExpectancy}
-                onBlur={()=>numValidation(lifeExpectancy)}
+                onBlur={() => numValidation(lifeExpectancy)}
                 onChange={(event) => setLifeExpectancy(event.target.value)}
               />
-                <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">info about</span>
+              <div class="tooltip">&#9432;
+                <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
@@ -175,25 +173,25 @@ function InputForm() {
               <input
                 type="number"
                 value={retiredExpenses}
-                onBlur={()=>numValidation(retiredExpenses)}
+                onBlur={() => numValidation(retiredExpenses)}
                 onChange={(event) => setRetiredExpenses(event.target.value)}
               />
-                <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">info about</span>
+              <div class="tooltip">&#9432;
+                <span class="tool-tip-text">info about</span>
               </div>
             </div>
             <div className="top-field">
               <label>Annual Income:</label>
               <div className="icon-wrap">
-              <span className="icon-code">&#8377;</span>
+                <span className="icon-code">&#8377;</span>
               </div>
               <input
                 type="number"
                 value={annualIncome}
                 onChange={(event) => setAnnualIncome(event.target.value)}
               />
-                <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">Input total income you make from all sources in a year</span>
+              <div class="tooltip">&#9432;
+                <span class="tool-tip-text">Input total income you make from all sources in a year</span>
               </div>
             </div>
             <div className="top-field">
@@ -201,11 +199,11 @@ function InputForm() {
               <input
                 type="number"
                 value={annualIncrement}
-                onBlur={()=>numValidation(annualIncrement)}
+                onBlur={() => numValidation(annualIncrement)}
                 onChange={(event) => setAnnualIncome(event.target.value)}
               />
-                <div class="tooltip">&#9432;
-                   <span class="tool-tip-text">info about</span>
+              <div class="tooltip">&#9432;
+                <span class="tool-tip-text">info about</span>
               </div>
             </div>
           </div>
@@ -321,7 +319,7 @@ function InputForm() {
                   onChange={(event) => handleInputChange(event, index)}
                   className="small-input"
                 />
-                
+
                 <input
                   type="number"
                   name="toBeInvestedAmount"
@@ -337,32 +335,31 @@ function InputForm() {
                   readOnly
                 />
                 <button
-                  id="remove-button"
                   type="button"
                   onClick={() => handleRemoveGoal(index)}
-                  className="remove-button align-self-center"
+                  className="add-remove-button remove-button"
                 >
                   X
                 </button>
               </div>
             ))}
+
             <button
               type="button"
               onClick={handleAddGoal}
-              className="add-button"
-              id="round-button"
+              className="add-remove-button add-button"
             >
               +
             </button>
             <div className="bottomRightInput">
-                <label>Total</label>
-              <input 
-                  type="number"
-                  name="totalMonthlyInvestmentAmount"
-                  value={totalMonthlyInvestmentAmount}
+              <label>Total</label>
+              <input
+                type="number"
+                name="totalMonthlyInvestmentAmount"
+                value={totalMonthlyInvestmentAmount}
                 readOnly
-                />
-                </div>
+              />
+            </div>
           </div>
         </div>
         <button type="submit">Submit</button>
