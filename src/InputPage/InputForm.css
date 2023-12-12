@@ -30,6 +30,7 @@
   text-align: left;
   margin-right: 10px;
   width: 200px; /* Adjust the width as per your requirement */
+  align-items: center;
 }
 
 .top-field input {

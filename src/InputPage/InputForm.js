@@ -20,6 +20,8 @@ function InputForm() {
   const [totalMonthlyInvestmentAmount, setTotalMonthlyInvestmentAmount] = useState("");
   const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] =
     useState(0);
+  const [isTopFieldsVisible, setIsTopFieldsVisible] = useState(true);
+  const [isGoalFieldsVisible, setIsGoalFieldsVisible] = useState(true);
 
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
@@ -33,11 +35,11 @@ function InputForm() {
         updatedValues[index].goalInflation &&
         updatedValues[index].horizon
       ) {
-        var horizon = updatedValues[index].horizon
+        var horizon = Number(updatedValues[index].horizon)
         const futureValue = calculateFutureValue(
-          updatedValues[index].goalInflation / 100,
-          updatedValues[index].horizon,
-          updatedValues[index].cost
+          Number(updatedValues[index].goalInflation) / 100,
+          Number(updatedValues[index].horizon),
+          Number(updatedValues[index].cost)
         );
         updatedValues[index].costAtTimeOfGoal = futureValue;
 
@@ -51,8 +53,8 @@ function InputForm() {
 
         updatedValues[index].toBeInvestedAmount = calculateMonthlySavings(updatedValues[index].cost,
           horizon,
-          updatedValues[index].goalInflation / 100,
-          updatedValues[index].toBeInvestedAmountReturnRate / 100)
+          Number(updatedValues[index].goalInflation) / 100,
+          Number(updatedValues[index].toBeInvestedAmountReturnRate) / 100)
       }
       // Calculate totalMonthlyInvestmentAmount
       const totalInvestmentAmount = inputValues.reduce(
@@ -64,7 +66,6 @@ function InputForm() {
     });
 
   };
-
   const handleAddGoal = () => {
     setInputValues((prevState) => [
       ...prevState,
@@ -83,15 +84,15 @@ function InputForm() {
     ]);
   };
   const handleTopFieldsChange = () => {
-    const yearsForRetirementValue = retirementAge - age;
-    const yearsInRetirementValue = lifeExpectancy - retirementAge;
+    const yearsForRetirementValue = Number(retirementAge) - Number(age)
+    const yearsInRetirementValue = Number(lifeExpectancy) - Number(retirementAge);
 
     setYearsForRetirement(yearsForRetirementValue);
     setYearsInRetirement(yearsInRetirementValue);
     const futureValue = calculateFutureValue(
-      inflation / 100,
-      yearsForRetirement,
-      currentMonthlyExpenses
+      Number(inflation) / 100,
+      Number(yearsForRetirement),
+      Number(currentMonthlyExpenses)
     );
     const result = (futureValue * (retiredExpenses / 100)).toFixed(0);
     setMonthlyExpensesPostRetirement(result);
@@ -103,12 +104,6 @@ function InputForm() {
       return updatedValues;
     });
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Perform any necessary validation or processing of the goal purposes data
-    console.log(inputValues);
-  };
   const inflationValidation = (v) => {
     if (v > 10 || v < 7) alert("the inflation rate occurs between 7 and 10");
   };
@@ -116,12 +111,10 @@ function InputForm() {
   const numValidation = (n) => {
     if (n < 10 || n > 100) alert("Kindly enter the correct details in the input field");
   };
-  const [isTopFieldsVisible, setIsTopFieldsVisible] = useState(true);
 
   const handleToggleTopFields = () => {
     setIsTopFieldsVisible(!isTopFieldsVisible);
   }
-  const [isGoalFieldsVisible, setIsGoalFieldsVisible] = useState(true);
 
   const handleToggleGoalFields = () => {
     setIsGoalFieldsVisible(!isGoalFieldsVisible);
