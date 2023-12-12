@@ -116,184 +116,211 @@ function InputForm() {
   const numValidation = (n) => {
     if (n < 10 || n > 100) alert("Kindly enter the correct details in the input field");
   };
-  const headingStyles = {
-    color: 'black',
-    fontFamily: 'Arial, sans-serif',
-    textAlign: 'center',
-    // Add more styles as needed
-  };
+  const [isTopFieldsVisible, setIsTopFieldsVisible] = useState(true);
+
+  const handleToggleTopFields = () => {
+    setIsTopFieldsVisible(!isTopFieldsVisible);
+  }
+  const [isGoalFieldsVisible, setIsGoalFieldsVisible] = useState(true);
+
+  const handleToggleGoalFields = () => {
+    setIsGoalFieldsVisible(!isGoalFieldsVisible);
+  }
   return (
-    <div>
-      <h1 style={headingStyles}>General And Retirement Information </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="top-fields">
-          <div className="top-left-fields">
-            <div className="top-field">
-              <label>Monthly expenses today:</label>
-              <div className="icon-wrap">
-                <span className="icon-code">&#8377;</span>
-                <input
-                  className="text-currency align-right"
-                  type="number"
-                  value={currentMonthlyExpenses}
-                  onChange={(event) => {
-                    setCurrentMonthlyExpenses(event.target.value);
-                    handleTopFieldsChange();
-                  }
-                  }
-                />
+    <div className="container">
+      <section className="general-info">
+        <div className="display-flex">
+          <h2 className="goals-heading">General And Retirement Information</h2>
+          <span
+            className="display-flex align-items-center"
+            onClick={handleToggleTopFields}
+            style={{ cursor: "pointer" }}
+          >
+            &#9660;
+          </span>
+        </div>
+
+        {isTopFieldsVisible && (
+          <div className="top-fields">
+            <div className="top-left-fields">
+              <div className="top-field">
+                <label>Monthly expenses today:</label>
+                <div className="icon-wrap">
+                  <span className="icon-code">&#8377;</span>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    value={currentMonthlyExpenses}
+                    onChange={(event) => {
+                      setCurrentMonthlyExpenses(event.target.value);
+                      handleTopFieldsChange();
+                    }
+                    }
+                  />
+                </div>
               </div>
-            </div>
-            <div className="top-field">
-              <label>Inflation (your thoughts in %):</label>
-              <div className="icon-wrap">
-                <span className="icon-code">%</span>
+              <div className="top-field">
+                <label>Inflation (your thoughts in %):</label>
+                <div className="icon-wrap">
+                  <span className="icon-code">%</span>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    value={inflation}
+                    placeholder="7-10%"
+                    onBlur={() => inflationValidation(inflation)}
+                    onChange={(event) => {
+                      setInflation(event.target.value)
+                      handleTopFieldsChange();
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="top-field">
+                <label>Age:</label>
                 <input
-                  className="text-currency align-right"
                   type="number"
-                  value={inflation}
-                  placeholder="7-10%"
-                  onBlur={() => inflationValidation(inflation)}
+                  className="align-right"
+                  placeholder="enter your age"
+                  value={age}
                   onChange={(event) => {
-                    setInflation(event.target.value)
+                    setAge(event.target.value);
                     handleTopFieldsChange();
                   }}
                 />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>Age of retirement:</label>
+                <input
+                  className="align-right"
+                  type="number"
+                  value={retirementAge}
+                  placeholder="50?"
+                  tooltipText="enter your retirement"
+                  onBlur={() => numValidation(retirementAge)}
+                  onChange={(event) => {
+                    setRetirementAge(event.target.value)
+                    handleTopFieldsChange();
+                  }}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>Life Expectancy:</label>
+                <input
+                  type="number"
+                  className="align-right"
+                  placeholder="80?"
+                  value={lifeExpectancy}
+                  onBlur={() => numValidation(lifeExpectancy)}
+                  onChange={(event) => {
+                    setLifeExpectancy(event.target.value)
+                    handleTopFieldsChange();
+                  }}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>% expenses after retirement:</label>
+                <input
+                  type="number"
+                  className="align-right"
+                  value={retiredExpenses}
+                  placeholder="70-80%"
+                  onBlur={() => numValidation(retiredExpenses)}
+                  onChange={(event) => {
+                    setRetiredExpenses(event.target.value)
+                    handleTopFieldsChange();
+                  }}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>Annual Income:</label>
+                <div className="icon-wrap">
+                  <span className="icon-code">&#8377;</span>
+                </div>
+                <input
+                  className="text-currency align-right"
+                  type="number"
+                  value={annualIncome}
+                  onChange={(event) => setAnnualIncome(event.target.value)}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">Input total income you make from all sources in a year</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>% Annual Increment:</label>
+                <input
+                  type="number"
+                  className="align-right"
+                  placeholder="10-15%"
+                  value={annualIncrement}
+                  onBlur={() => numValidation(annualIncrement)}
+                  onChange={(event) => setAnnualIncrement(event.target.value)}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
+                </div>
               </div>
             </div>
-            <div className="top-field">
-              <label>Age:</label>
-              <input
-                type="number"
-                className="align-right"
-                placeholder="enter your age"
-                value={age}
-                onChange={(event) => {
-                  setAge(event.target.value);
-                  handleTopFieldsChange();
-                }}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">info about</span>
-              </div>
-            </div>
-            <div className="top-field">
-              <label>Age of retirement:</label>
-              <input
-                className="align-right"
-                type="number"
-                value={retirementAge}
-                placeholder="50?"
-                tooltipText="enter your retirement"
-                onBlur={() => numValidation(retirementAge)}
-                onChange={(event) => {
-                  setRetirementAge(event.target.value)
-                  handleTopFieldsChange();
-                }}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">info about</span>
-              </div>
-            </div>
-            <div className="top-field">
-              <label>Life Expectancy:</label>
-              <input
-                type="number"
-                className="align-right"
-                placeholder="80?"
-                value={lifeExpectancy}
-                onBlur={() => numValidation(lifeExpectancy)}
-                onChange={(event) => {
-                  setLifeExpectancy(event.target.value)
-                  handleTopFieldsChange();
-                }}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">info about</span>
-              </div>
-            </div>
-            <div className="top-field">
-              <label>% expenses after retirement:</label>
-              <input
-                type="number"
-                className="align-right"
-                value={retiredExpenses}
-                placeholder="70-80%"
-                onBlur={() => numValidation(retiredExpenses)}
-                onChange={(event) => {
-                  setRetiredExpenses(event.target.value)
-                  handleTopFieldsChange();
-                }}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">info about</span>
-              </div>
-            </div>
-            <div className="top-field">
-              <label>Annual Income:</label>
-              <div className="icon-wrap">
-                <span className="icon-code">&#8377;</span>
-              </div>
-              <input
-                className="text-currency align-right"
-                type="number"
-                value={annualIncome}
-                onChange={(event) => setAnnualIncome(event.target.value)}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">Input total income you make from all sources in a year</span>
-              </div>
-            </div>
-            <div className="top-field">
-              <label>% Annual Increment:</label>
-              <input
-                type="number"
-                className="align-right"
-                placeholder="10-15%"
-                value={annualIncrement}
-                onBlur={() => numValidation(annualIncrement)}
-                onChange={(event) => setAnnualIncrement(event.target.value)}
-              />
-              <div class="tooltip">&#9432;
-                <span class="tool-tip-text">info about</span>
-              </div>
-            </div>
-          </div>
 
-          <div className="top-right-fields">
-            <div className="right-field">
-              <label>Number of years for retirement:</label>
-              <input
-                type="number"
-                value={yearsForRetirement}
-                onChange={(event) => setYearsForRetirement(event.target.value)}
-                readOnly
-              />
-            </div>
-            <div className="right-field">
-              <label>Number of years in retirement:</label>
-              <input
-                type="number"
-                value={yearsInRetirement}
-                onChange={(event) => setYearsInRetirement(event.target.value)}
-                readOnly
-              />
-            </div>
-            <div className="right-field">
-              <label>Value of monthly expenses post retirement:</label>
-              <input
-                type="number"
-                value={monthlyExpensesPostRetirement}
-                onChange={(event) =>
-                  setMonthlyExpensesPostRetirement(event.target.value)
-                }
-                readOnly
-              />
+            <div className="top-right-fields">
+              <div className="right-field">
+                <label>Number of years for retirement:</label>
+                <input
+                  type="number"
+                  value={yearsForRetirement}
+                  onChange={(event) => setYearsForRetirement(event.target.value)}
+                  readOnly
+                />
+              </div>
+              <div className="right-field">
+                <label>Number of years in retirement:</label>
+                <input
+                  type="number"
+                  value={yearsInRetirement}
+                  onChange={(event) => setYearsInRetirement(event.target.value)}
+                  readOnly
+                />
+              </div>
+              <div className="right-field">
+                <label>Value of monthly expenses post retirement:</label>
+                <input
+                  type="number"
+                  value={monthlyExpensesPostRetirement}
+                  onChange={(event) =>
+                    setMonthlyExpensesPostRetirement(event.target.value)
+                  }
+                  readOnly
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="goals">
+        )}
+      </section>
+      <div className="goals">
+        <div className="display-flex">
           <h2 className="goals-heading">Goals</h2>
+          <span
+            className="display-flex align-items-center"
+            onClick={handleToggleGoalFields}
+            style={{ cursor: "pointer" }}
+          >
+            &#9660;
+          </span>
+        </div>
+        {isGoalFieldsVisible && (
           <div className="goals-list">
             <div className="goal-row heading">
               <label>Goal Purpose</label>
@@ -439,8 +466,8 @@ function InputForm() {
               />
             </div>
           </div>
-        </div>
-      </form>
+        )}
+      </div>
     </div>
   );
 }
