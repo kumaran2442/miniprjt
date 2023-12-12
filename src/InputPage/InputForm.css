@@ -12,7 +12,7 @@
 }
 .container {
   margin: auto;
-  padding: 20px;
+  padding: 1rem;
 }
 .top-field {
   display: flex;
@@ -21,22 +21,23 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
   align-items: flex-start;
 }
 
 .top-field label {
   display: inline-flex;
   text-align: left;
-  margin-right: 10px;
-  width: 200px; /* Adjust the width as per your requirement */
+  margin-right: 0.5rem;
+  width: 12rem; /* Adjust the width as per your requirement */
   align-items: center;
+  font-size: 1rem;
 }
 
 .top-field input {
-  margin-right: 10px;
+  margin-right: 0.5rem;
   flex: 1;
-  width: 150px; /* Adjust the width as per your requirement */
+  width: 8rem; /* Adjust the width as per your requirement */
 }
 
 body {
@@ -55,34 +56,34 @@ h1 {
 
 form {
   background-color: #fff;
-  padding: 20px;
+  padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 label {
-  margin-bottom: 8px;
+  margin-bottom: 1rem;
   color: #333;
 }
 
 input,
 select {
-  padding: 10px;
-  margin-bottom: 16px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
 }
 
 button {
-  padding: 10px;
+  padding: 0.5rem;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
 button:hover {
@@ -92,19 +93,19 @@ button:hover {
 .top-right-fields {
   display: flex;
   flex-direction: column;
-  margin-left: 20px; /* Adjust the margin as per your requirement */
+  margin-left: 1rem; /* Adjust the margin as per your requirement */
 }
 
 .right-field {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; /* Adjust the margin as per your requirement */
+  margin-bottom: 0.5rem; /* Adjust the margin as per your requirement */
 }
 
 .right-field label {
-  width: 250px; /* Adjust the width as per your requirement */
+  width: 14rem; /* Adjust the width as per your requirement */
   text-align: left;
-  margin-right: 10px; /* Adjust the margin as per your requirement */
+  margin-right: 0.5rem; /* Adjust the margin as per your requirement */
 }
 
 .right-field input {
@@ -118,7 +119,7 @@ button:hover {
 .icon-code {
   position: absolute;
   left: 8px;
-  top: 10px;
+  top: 0.5rem;
 }
 
 .text-currency {
@@ -150,15 +151,14 @@ button:hover {
 
 .goal-row input,
 select {
-  flex: 1;
-  margin-right: 10px;
-  width: 150px;
+  margin-right: 0.5rem;
+  width: 8rem;
 }
 
 .goal-row label {
-  width: 150px;
-  margin-right: 10px;
-  padding: 10px;
+  width: 8rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem;
   text-align: left;
   font-style: italic;
   font-size: 0.8rem;
@@ -178,18 +178,18 @@ input[readonly] {
 }
 
 .goal-row input.small-input {
-  width: 75px;
+  width: 7rem;
 }
 .goal-row label.small-input {
-  width: 75px;
+  width: 7rem;
 }
 
 .bottomRightInput {
   position: static;
   bottom: 0;
   right: 0;
-  padding: 10px;
-  margin: 10px;
+  padding: 0.5rem;
+  margin: 0.5rem;
 }
 
 /** Add and remove buttons starts **/
@@ -219,8 +219,7 @@ input[readonly] {
 /* Style for the elongated button on hover. */
 .add-remove-button:hover {
   /* Increase width to accommodate the text. */
-  width: -moz-fit-content;
-  width: fit-content;
+  width: 6rem;
   text-align: center;
 }
 
@@ -234,3 +233,21 @@ input[readonly] {
 }
 
 /** Add and remove buttons ends **/
+.font-size-1point5em {
+  font-size: 1.5em;
+}
+
+.margin-left-1rem {
+  margin-left: 1rem;
+}
+
+.margin-right-1rem {
+  margin-right: 1rem;
+}
+.flex-direction-column {
+  flex-direction: column;
+}
+
+.align-self-flex-start {
+  align-self: flex-start;
+}
