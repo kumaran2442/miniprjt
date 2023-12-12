@@ -252,7 +252,7 @@ function InputForm() {
                 placeholder="10-15%"
                 value={annualIncrement}
                 onBlur={() => numValidation(annualIncrement)}
-                onChange={(event) => setAnnualIncome(event.target.value)}
+                onChange={(event) => setAnnualIncrement(event.target.value)}
               />
               <div class="tooltip">&#9432;
                 <span class="tool-tip-text">info about</span>
