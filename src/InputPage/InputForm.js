@@ -5,27 +5,30 @@ import "./ToolTip.css"
 
 
 function InputForm() {
-  const [inputValues, setInputValues] = useState([]);
-  const [annualIncome, setAnnualIncome] = useState("");
-  const [annualIncrement, setAnnualIncrement] = useState("");
-  const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
-  const [retiredExpenses, setRetiredExpenses] = useState();
-  const [inflation, setInflation] = useState("");
-  const [age, setAge] = useState("");
-  const [retirementAge, setRetirementAge] = useState("");
-  const [lifeExpectancy, setLifeExpectancy] = useState("");
+  const [topFields, setTopFields] = useState({
+    currentMonthlyExpenses: 0,
+    inflation: 0,
+    annualIncome: 0,
+    annualIncrement: 0,
+    age: 0,
+    retirementAge: 0,
+    lifeExpectancy: 0,
+    retiredExpenses: 0,
+    yearsForRetirement: 0,
+    yearsInRetirement: 0,
+    monthlyExpensesPostRetirement: 0,
+  });
 
-  const [yearsForRetirement, setYearsForRetirement] = useState("");
-  const [yearsInRetirement, setYearsInRetirement] = useState("");
-  const [totalMonthlyInvestmentAmount, setTotalMonthlyInvestmentAmount] = useState("");
-  const [monthlyExpensesPostRetirement, setMonthlyExpensesPostRetirement] =
-    useState(0);
+  const [goals, setGoals] = useState([]);
+
+  const [goalSummary, setGoalSummary] = useState([]);
+
   const [isTopFieldsVisible, setIsTopFieldsVisible] = useState(true);
   const [isGoalFieldsVisible, setIsGoalFieldsVisible] = useState(true);
 
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
-    setInputValues((prevState) => {
+    setGoals((prevState) => {
       const updatedValues = [...prevState];
       updatedValues[index][name] = value;
 
@@ -43,11 +46,11 @@ function InputForm() {
         );
         updatedValues[index].costAtTimeOfGoal = futureValue;
 
-        if (horizon < 3) {
+        if (horizon <= 3) {
           updatedValues[index].toBeInvestedAmountReturnRate = 7; // fixed deposit
         } else if (horizon > 3 && horizon < 7) {
           updatedValues[index].toBeInvestedAmountReturnRate = 10; // debt mutual funds and bonds
-        } else if (horizon > 7) {
+        } else if (horizon >= 7) {
           updatedValues[index].toBeInvestedAmountReturnRate = 12; // equity mutual funds
         }
 
@@ -57,19 +60,53 @@ function InputForm() {
           Number(updatedValues[index].toBeInvestedAmountReturnRate) / 100)
       }
       // Calculate totalMonthlyInvestmentAmount
-      const totalInvestmentAmount = inputValues.reduce(
-        (sum, goal) => sum + Number(goal.toBeInvestedAmount),
-        0
-      );
-      setTotalMonthlyInvestmentAmount(totalInvestmentAmount.toFixed(0));
+      // calculateGoalSummary();
       return updatedValues;
     });
 
   };
-  const handleAddGoal = () => {
-    setInputValues((prevState) => [
-      ...prevState,
-      {
+
+  useEffect(() => {
+    calculateGoalSummary();
+  }, [goals]);
+
+  const calculateGoalSummary = () => {
+    const summary = {
+      cost: 0,
+      costAtTimeOfGoal: 0,
+      alreadyInvestedAmount: 0,
+      toBeInvestedAmount: 0,
+      goalInflation: 0,
+      horizon: 0,
+      alreadyInvestedAmountReturnRate: 0,
+      toBeInvestedAmountReturnRate: 0
+    };
+    summary.cost = goals.reduce((sum, goal) => sum + Number(goal.cost), 0);
+    summary.costAtTimeOfGoal = goals.reduce((sum, goal) => sum + Number(goal.costAtTimeOfGoal), 0);
+    summary.alreadyInvestedAmount = goals.reduce((sum, goal) => sum + Number(goal.alreadyInvestedAmount), 0);
+    summary.toBeInvestedAmount = goals.reduce((sum, goal) => sum + Number(goal.toBeInvestedAmount), 0);
+
+
+    const totalInflation = goals.reduce((sum, goal) => sum + Number(goal.goalInflation), 0);
+    summary.goalInflation = totalInflation / goals.length;
+
+
+    const totalHorizon = goals.reduce((sum, goal) => sum + Number(goal.horizon), 0);
+    summary.horizon = totalHorizon / goals.length;
+
+    const totalAlreadyInvestedAmountReturnRate = goals.reduce((sum, goal) => sum + Number(goal.alreadyInvestedAmountReturnRate), 0);
+    summary.alreadyInvestedAmountReturnRate = totalAlreadyInvestedAmountReturnRate / goals.length;
+
+    const totalToBeInvestedAmountReturnRate = goals.reduce((sum, goal) => sum + Number(goal.toBeInvestedAmountReturnRate), 0);
+    summary.toBeInvestedAmountReturnRate = totalToBeInvestedAmountReturnRate / goals.length;
+
+    setGoalSummary(summary);
+  }
+
+  const handleAddGoal = (index) => {
+    setGoals((prevState) => {
+      const updatedGoals = [...prevState];
+      updatedGoals.splice(index + 1, 0, {
         goal: "",
         cost: 0,
         goalInflation: 0,
@@ -80,30 +117,57 @@ function InputForm() {
         alreadyInvestedAmountReturnRate: 0,
         toBeInvestedAmount: 0,
         toBeInvestedAmountReturnRate: 0
-      },
-    ]);
+      });
+      return updatedGoals;
+    });
+    if (goalSummary.length === 0) {
+      setGoalSummary((prevState) => [
+        ...prevState,
+        {
+          goal: "Summary",
+          cost: 0,
+          goalInflation: 0,
+          horizon: 0,
+          category: "",
+          costAtTimeOfGoal: 0,
+          alreadyInvestedAmount: 0,
+          alreadyInvestedAmountReturnRate: 0,
+          toBeInvestedAmount: 0,
+          toBeInvestedAmountReturnRate: 0
+        },
+      ]);
+    }
   };
-  const handleTopFieldsChange = () => {
-    const yearsForRetirementValue = Number(retirementAge) - Number(age)
-    const yearsInRetirementValue = Number(lifeExpectancy) - Number(retirementAge);
 
-    setYearsForRetirement(yearsForRetirementValue);
-    setYearsInRetirement(yearsInRetirementValue);
-    const futureValue = calculateFutureValue(
-      Number(inflation) / 100,
-      Number(yearsForRetirement),
-      Number(currentMonthlyExpenses)
-    );
-    const result = (futureValue * (retiredExpenses / 100)).toFixed(0);
-    setMonthlyExpensesPostRetirement(result);
+  const handleTopFieldsChange = (event) => {
+    const { name, value } = event.target;
+    setTopFields((prevState) => {
+      const updatedValues = { ...prevState };
+      updatedValues[name] = value;
+      const yearsForRetirementValue = Number(updatedValues.retirementAge) - Number(updatedValues.age)
+      const yearsInRetirementValue = Number(updatedValues.lifeExpectancy) - Number(updatedValues.retirementAge);
+      updatedValues.yearsForRetirement = yearsForRetirementValue;
+      updatedValues.yearsInRetirement = yearsInRetirementValue;
+      const futureValue = calculateFutureValue(
+        Number(updatedValues.inflation) / 100,
+        Number(updatedValues.yearsForRetirement),
+        Number(updatedValues.currentMonthlyExpenses)
+      );
+      const result = (futureValue * (updatedValues.retiredExpenses / 100)).toFixed(0);
+      updatedValues.monthlyExpensesPostRetirement = result;
+
+      return updatedValues;
+    })
   };
+
   const handleRemoveGoal = (index) => {
-    setInputValues((prevState) => {
+    setGoals((prevState) => {
       const updatedValues = [...prevState];
       updatedValues.splice(index, 1);
       return updatedValues;
     });
   };
+
   const inflationValidation = (v) => {
     if (v > 10 || v < 7) alert("the inflation rate occurs between 7 and 10");
   };
@@ -120,20 +184,26 @@ function InputForm() {
     setIsGoalFieldsVisible(!isGoalFieldsVisible);
   }
   return (
-    <div className="container">
+    <div className="container display-flex flex-direction-column">
       <section className="general-info">
         <div className="display-flex">
           <h2 className="goals-heading">General And Retirement Information</h2>
+
           <span
-            className="display-flex align-items-center"
+            className="display-flex align-items-center font-size-1point5em margin-left-1rem"
             onClick={handleToggleTopFields}
             style={{ cursor: "pointer" }}
           >
-            &#9660;
+            {isTopFieldsVisible ? (
+              <span >&#9660;</span>
+            ) : (
+              <span >&#9658;</span>
+            )}
           </span>
         </div>
 
         {isTopFieldsVisible && (
+
           <div className="top-fields">
             <div className="top-left-fields">
               <div className="top-field">
@@ -143,10 +213,10 @@ function InputForm() {
                   <input
                     className="text-currency align-right"
                     type="number"
-                    value={currentMonthlyExpenses}
+                    name="currentMonthlyExpenses"
+                    value={topFields.currentMonthlyExpenses}
                     onChange={(event) => {
-                      setCurrentMonthlyExpenses(event.target.value);
-                      handleTopFieldsChange();
+                      handleTopFieldsChange(event);
                     }
                     }
                   />
@@ -159,12 +229,12 @@ function InputForm() {
                   <input
                     className="text-currency align-right"
                     type="number"
-                    value={inflation}
+                    name="inflation"
+                    value={topFields.inflation}
                     placeholder="7-10%"
-                    onBlur={() => inflationValidation(inflation)}
+                    onBlur={(event) => inflationValidation(event.target.value)}
                     onChange={(event) => {
-                      setInflation(event.target.value)
-                      handleTopFieldsChange();
+                      handleTopFieldsChange(event);
                     }}
                   />
                 </div>
@@ -173,16 +243,16 @@ function InputForm() {
                 <label>Age:</label>
                 <input
                   type="number"
+                  name="age"
                   className="align-right"
                   placeholder="enter your age"
-                  value={age}
+                  value={topFields.age}
                   onChange={(event) => {
-                    setAge(event.target.value);
-                    handleTopFieldsChange();
+                    handleTopFieldsChange(event);
                   }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">info about</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">info about</span>
                 </div>
               </div>
               <div className="top-field">
@@ -190,51 +260,51 @@ function InputForm() {
                 <input
                   className="align-right"
                   type="number"
-                  value={retirementAge}
+                  name="retirementAge"
+                  value={topFields.retirementAge}
                   placeholder="50?"
                   tooltipText="enter your retirement"
-                  onBlur={() => numValidation(retirementAge)}
+                  onBlur={(event) => numValidation(event.target.value)}
                   onChange={(event) => {
-                    setRetirementAge(event.target.value)
-                    handleTopFieldsChange();
+                    handleTopFieldsChange(event);
                   }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">info about</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">info about</span>
                 </div>
               </div>
               <div className="top-field">
                 <label>Life Expectancy:</label>
                 <input
                   type="number"
-                  className="align-right"
+                  name="lifeExpectancy"
                   placeholder="80?"
-                  value={lifeExpectancy}
-                  onBlur={() => numValidation(lifeExpectancy)}
+                  className="align-right"
+                  value={topFields.lifeExpectancy}
+                  onBlur={(event) => numValidation(event.target.value)}
                   onChange={(event) => {
-                    setLifeExpectancy(event.target.value)
-                    handleTopFieldsChange();
+                    handleTopFieldsChange(event);
                   }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">info about</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">info about</span>
                 </div>
               </div>
               <div className="top-field">
                 <label>% expenses after retirement:</label>
                 <input
                   type="number"
+                  name="retiredExpenses"
                   className="align-right"
-                  value={retiredExpenses}
+                  value={topFields.retiredExpenses}
                   placeholder="70-80%"
-                  onBlur={() => numValidation(retiredExpenses)}
+                  onBlur={(event) => numValidation(event.target.value)}
                   onChange={(event) => {
-                    setRetiredExpenses(event.target.value)
-                    handleTopFieldsChange();
+                    handleTopFieldsChange(event);
                   }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">info about</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">info about</span>
                 </div>
               </div>
               <div className="top-field">
@@ -245,11 +315,14 @@ function InputForm() {
                 <input
                   className="text-currency align-right"
                   type="number"
-                  value={annualIncome}
-                  onChange={(event) => setAnnualIncome(event.target.value)}
+                  name="annualIncome"
+                  value={topFields.annualIncome}
+                  onChange={(event) => {
+                    handleTopFieldsChange(event);
+                  }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">Input total income you make from all sources in a year</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">Input total income you make from all sources in a year</span>
                 </div>
               </div>
               <div className="top-field">
@@ -257,13 +330,16 @@ function InputForm() {
                 <input
                   type="number"
                   className="align-right"
+                  name="annualIncrement"
                   placeholder="10-15%"
-                  value={annualIncrement}
-                  onBlur={() => numValidation(annualIncrement)}
-                  onChange={(event) => setAnnualIncrement(event.target.value)}
+                  value={topFields.annualIncrement}
+                  onBlur={(event) => numValidation(event.target.value)}
+                  onChange={(event) => {
+                    handleTopFieldsChange(event);
+                  }}
                 />
-                <div class="tooltip">&#9432;
-                  <span class="tool-tip-text">info about</span>
+                <div className="tooltip">&#9432;
+                  <span className="tool-tip-text">info about</span>
                 </div>
               </div>
             </div>
@@ -272,9 +348,12 @@ function InputForm() {
               <div className="right-field">
                 <label>Number of years for retirement:</label>
                 <input
+                  name="yearsForRetirement"
                   type="number"
-                  value={yearsForRetirement}
-                  onChange={(event) => setYearsForRetirement(event.target.value)}
+                  value={topFields.yearsForRetirement}
+                  onChange={(event) => {
+                    handleTopFieldsChange(event);
+                  }}
                   readOnly
                 />
               </div>
@@ -282,8 +361,11 @@ function InputForm() {
                 <label>Number of years in retirement:</label>
                 <input
                   type="number"
-                  value={yearsInRetirement}
-                  onChange={(event) => setYearsInRetirement(event.target.value)}
+                  name="yearsInRetirement"
+                  value={topFields.yearsInRetirement}
+                  onChange={(event) => {
+                    handleTopFieldsChange(event);
+                  }}
                   readOnly
                 />
               </div>
@@ -291,10 +373,11 @@ function InputForm() {
                 <label>Value of monthly expenses post retirement:</label>
                 <input
                   type="number"
-                  value={monthlyExpensesPostRetirement}
-                  onChange={(event) =>
-                    setMonthlyExpensesPostRetirement(event.target.value)
-                  }
+                  name="monthlyExpensesPostRetirement"
+                  value={topFields.monthlyExpensesPostRetirement}
+                  onChange={(event) => {
+                    handleTopFieldsChange(event);
+                  }}
                   readOnly
                 />
               </div>
@@ -306,11 +389,15 @@ function InputForm() {
         <div className="display-flex">
           <h2 className="goals-heading">Goals</h2>
           <span
-            className="display-flex align-items-center"
+            className="display-flex align-items-center font-size-1point5em margin-left-1rem"
             onClick={handleToggleGoalFields}
             style={{ cursor: "pointer" }}
           >
-            &#9660;
+            {isGoalFieldsVisible ? (
+              <span >&#9660;</span>
+            ) : (
+              <span >&#9658;</span>
+            )}
           </span>
         </div>
         {isGoalFieldsVisible && (
@@ -327,7 +414,7 @@ function InputForm() {
               <label className="small-input">To Be Invested Amount</label>
               <label className="small-input">To Be Invested Return Rate</label>
             </div>
-            {inputValues.map((goal, index) => (
+            {goals.map((goal, index) => (
               <div key={index} className="goal-row">
                 <input
                   type="text"
@@ -431,32 +518,125 @@ function InputForm() {
                 <button
                   type="button"
                   onClick={() => handleRemoveGoal(index)}
-                  className="add-remove-button remove-button"
+                  className="add-remove-button remove-button margin-right-1rem"
                 >
-                  X
+                  x
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddGoal(index)}
+                  className="add-remove-button add-button"
+                >
+                  +
                 </button>
               </div>
             ))}
+            {(goals === undefined || goals === null || goals.length === 0) && (
+              <button
+                type="button"
+                onClick={() => handleAddGoal(0)}
+                className="add-remove-button add-button"
+              >
+                +
+              </button>
+            )}
+            <div className="goal-row flex-direction-column">
 
-            <button
-              type="button"
-              onClick={handleAddGoal}
-              className="add-remove-button add-button"
-            >
-              +
-            </button>
-            <div className="bottomRightInput">
-              <label>Total</label>
-              <div className="icon-wrap">
-                <span className="icon-code">&#8377;</span>
+              <h3 className="goals-heading align-self-flex-start">Summary</h3>
+              <div className="display-flex">
+                <input
+                  type="text"
+                  name="goal"
+                  value={goalSummary.goal}
+                  readOnly
+                  placeholder="Summary"
+                />
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="cost"
+                    value={goalSummary.cost}
+                    readOnly
+                  />
+                </div>
+                <input
+                  type="number"
+                  name="goalInflation"
+                  value={goalSummary.goalInflation}
+                  readOnly
+                  className="small-input align-right"
+                />
+                <input
+                  type="number"
+                  name="horizon"
+                  value={goalSummary.horizon}
+                  readOnly
+                  className="small-input align-right"
+                />
+                <select
+                  name="category"
+                  value={goalSummary.category}
+                  readOnly
+                >
+                </select>
+
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="costAtTimeOfGoal"
+                    value={goalSummary.costAtTimeOfGoal}
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right"
+                    type="number"
+                    name="alreadyInvestedAmount"
+                    value={goalSummary.alreadyInvestedAmount}
+                    readOnly
+                  />
+                </div>
+                <input
+                  type="number"
+                  name="alreadyInvestedAmountReturnRate"
+                  value={goalSummary.alreadyInvestedAmountReturnRate}
+                  readOnly
+                  className="small-input align-right"
+                />
+
+                <div>
+                  <div className="icon-wrap">
+                    <span className="icon-code">&#8377;</span>
+                  </div>
+                  <input
+                    className="text-currency align-right small-input"
+                    type="number"
+                    name="toBeInvestedAmount"
+                    value={goalSummary.toBeInvestedAmount}
+                    readOnly
+                  />
+                </div>
+                <input
+                  type="number"
+                  name="toBeInvestedAmountReturnRate"
+                  value={goalSummary.toBeInvestedAmountReturnRate}
+                  className="small-input align-right"
+                  readOnly
+                />
               </div>
-              <input
-                className="text-currency align-right small-input"
-                type="number"
-                name="totalMonthlyInvestmentAmount"
-                value={totalMonthlyInvestmentAmount}
-                readOnly
-              />
+
             </div>
           </div>
         )}
