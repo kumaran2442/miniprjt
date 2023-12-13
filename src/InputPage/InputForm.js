@@ -6,7 +6,7 @@ import "./ToolTip.css"
 
 function InputForm() {
   const [inputValues, setInputValues] = useState([]);
-  const [MonthlyIncome, setMonthlyIncome] = useState("");
+  const [annualIncome, setAnnualIncome] = useState("");
   const [annualIncrement, setAnnualIncrement] = useState("");
   const [currentMonthlyExpenses, setCurrentMonthlyExpenses] = useState("");
   const [retiredExpenses, setRetiredExpenses] = useState();
@@ -238,18 +238,32 @@ function InputForm() {
                 </div>
               </div>
               <div className="top-field">
-                <label>Monthly Income:</label>
+                <label>Annual Income:</label>
                 <div className="icon-wrap">
                   <span className="icon-code">&#8377;</span>
                 </div>
                 <input
                   className="text-currency align-right"
                   type="number"
-                  value={MonthlyIncome}
-                  onChange={(event) => setMonthlyIncome(event.target.value)}
+                  value={annualIncome}
+                  onChange={(event) => setAnnualIncome(event.target.value)}
                 />
                 <div class="tooltip">&#9432;
                   <span class="tool-tip-text">Input total income you make from all sources in a year</span>
+                </div>
+              </div>
+              <div className="top-field">
+                <label>% Annual Increment:</label>
+                <input
+                  type="number"
+                  className="align-right"
+                  placeholder="10-15%"
+                  value={annualIncrement}
+                  onBlur={() => numValidation(annualIncrement)}
+                  onChange={(event) => setAnnualIncrement(event.target.value)}
+                />
+                <div class="tooltip">&#9432;
+                  <span class="tool-tip-text">info about</span>
                 </div>
               </div>
             </div>
